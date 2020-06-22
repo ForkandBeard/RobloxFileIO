@@ -4,6 +4,8 @@ using System.Text;
 
 namespace RobloxFileIO
 {
+    // TODO: Command lines args should be replaced with a single arg which should be the path to a json file of config options. Command line args are rubbish...
+
     class ArgumentProcessor
     {
         private const string argPathRobloxStudio = "@ROBLOX_STUDIO_FILE";
