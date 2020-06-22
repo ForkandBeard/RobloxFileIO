@@ -35,8 +35,11 @@ namespace RobloxFileIO
                 originalRobloxFile.LoadXml(File.ReadAllText(robloxPath));
 
                 // Ready now to do the unzip.
+                Console.WriteLine("Unzip start into: " + tempWorkingFolder);
                 UnzipFiles(originalRobloxFile, tempWorkingFolder);
-            }finally
+                Console.WriteLine("Unzip done");
+            }
+            finally
             {
                 if(
                     (tempWorkingFolder != null)
@@ -103,54 +106,57 @@ namespace RobloxFileIO
                 var currentSystemFolderNode = originalRobloxFile.SelectSingleNode($"roblox/Item[@class='{systemFolder}']");
                 Console.WriteLine("Processing folder: " + systemFolder);
 
-                // Now find all the scripts in this folder.
-                foreach (XmlNode scriptNode in currentSystemFolderNode.SelectNodes("//Item[@class='Script']"))
-                {   // Now 'walk' up the script's parent's creating any folders until we get to the system folder root.
-                    subFolderPath = null;
-                    parent = scriptNode.ParentNode;
+                if (currentSystemFolderNode != null)
+                {
+                    // Now find all the scripts in this folder.
+                    foreach (XmlNode scriptNode in currentSystemFolderNode.SelectNodes(".//Item[@class='Script']"))
+                    {   // Now 'walk' up the script's parent's creating any folders until we get to the system folder root.
+                        subFolderPath = null;
+                        parent = scriptNode.ParentNode;
 
-                    while(
-                            (parent != currentSystemFolderNode)
-                            && (parent != null)
-                            )
-                    {
-                        if(
-                            (parent.Attributes != null)
-                            && (parent.Attributes["class"] != null)
-                            && (parent.Attributes["class"].Value == "Folder")
-                           )
+                        while (
+                                (parent != currentSystemFolderNode)
+                                && (parent != null)
+                                )
                         {
-                            if (subFolderPath == null)
+                            if (
+                                (parent.Attributes != null)
+                                && (parent.Attributes["class"] != null)
+                                && (parent.Attributes["class"].Value == "Folder")
+                               )
                             {
-                                subFolderPath = parent.SelectSingleNode("Item/Properties/string").Value;
+                                if (subFolderPath == null)
+                                {
+                                    subFolderPath = parent.SelectSingleNode("Item/Properties/string").Value;
+                                }
+                                else
+                                {
+                                    subFolderPath = Path.Combine(parent.SelectSingleNode("Item/Properties/string").Value, subFolderPath);
+                                }
                             }
-                            else
-                            {
-                                subFolderPath = Path.Combine(parent.SelectSingleNode("Item/Properties/string").Value, subFolderPath);
-                            }
+                            parent = parent.ParentNode;
                         }
-                        parent = parent.ParentNode;
-                    }
 
-                    // Now we found all the folders, create the script in the correct folder.
-                    if(subFolderPath != null)
-                    {
-                        scriptFolder = Path.Combine(workingFolderSystemFolder, subFolderPath);
-                        Directory.CreateDirectory(scriptFolder);
-                        Console.WriteLine("Created folder: " + scriptFolder);
-                    }
-                    else
-                    {
-                        scriptFolder = workingFolderSystemFolder;
-                    }
+                        // Now we found all the folders, create the script in the correct folder.
+                        if (subFolderPath != null)
+                        {
+                            scriptFolder = Path.Combine(workingFolderSystemFolder, subFolderPath);
+                            Directory.CreateDirectory(scriptFolder);
+                            Console.WriteLine("Created folder: " + scriptFolder);
+                        }
+                        else
+                        {
+                            scriptFolder = workingFolderSystemFolder;
+                        }
 
-                    scriptId = scriptNode.SelectSingleNode("Properties/string[@name='ScriptGuid']").InnerText;
-                    script = scriptNode.SelectSingleNode("Properties/ProtectedString").InnerText;
-                    scriptName = scriptNode.SelectSingleNode("Properties/string[@name='Name']").InnerText;
-                    scriptId = scriptId.Replace("{", "");
-                    scriptId = scriptId.Replace("}", "");
-                    Console.WriteLine("Creating script: " + scriptName);
-                    File.WriteAllText(Path.Combine(scriptFolder, $"{scriptName}.{scriptId}.lua"), script);
+                        scriptId = scriptNode.SelectSingleNode("Properties/string[@name='ScriptGuid']").InnerText;
+                        script = scriptNode.SelectSingleNode("Properties/ProtectedString").InnerText;
+                        scriptName = scriptNode.SelectSingleNode("Properties/string[@name='Name']").InnerText;
+                        scriptId = scriptId.Replace("{", "");
+                        scriptId = scriptId.Replace("}", "");
+                        Console.WriteLine("Creating script: " + scriptName);
+                        File.WriteAllText(Path.Combine(scriptFolder, $"{scriptName}.{scriptId}.lua"), script);
+                    }
                 }
             }
         }
