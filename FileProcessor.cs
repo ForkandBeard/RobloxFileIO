@@ -133,11 +133,11 @@ namespace RobloxFileIO
                             {
                                 if (subFolderPath == null)
                                 {
-                                    subFolderPath = parent.SelectSingleNode("Item/Properties/string").Value;
+                                    subFolderPath = parent.SelectSingleNode("./Properties/string").InnerText;
                                 }
                                 else
                                 {
-                                    subFolderPath = Path.Combine(parent.SelectSingleNode("Item/Properties/string").Value, subFolderPath);
+                                    subFolderPath = Path.Combine(parent.SelectSingleNode("./Properties/string").InnerText, subFolderPath);
                                 }
                             }
                             parent = parent.ParentNode;
