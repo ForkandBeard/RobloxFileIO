@@ -6,7 +6,7 @@ using System.IO;
 
 namespace RobloxFileIO
 {
-    class FileProcessor
+    class RobloxStudioFileUnzipper
     {
         private const string tempFolderRootName = "RobloxFileIO";
         private const string workspaceFolderName = "Workspace";
@@ -228,7 +228,11 @@ namespace RobloxFileIO
                     destinationDirectory = Path.GetDirectoryName(destinationPath);
                     Directory.CreateDirectory(destinationDirectory);
 
-                    Console.WriteLine("Copying file: " + destinationPath);                    
+                    Console.WriteLine("Copying file: " + destinationPath);     
+                    if(File.Exists(destinationPath))
+                    {
+                        File.Delete(destinationPath);
+                    }
                     File.Copy(file, destinationPath);
                 }catch(Exception ex)
                 {

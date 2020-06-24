@@ -84,10 +84,11 @@ namespace RobloxFileIO
             switch (direction)
             {
                 case Direction.ROBLOX_STUDIO_TO_MANY_FILES:
-                    FileProcessor.UnzipFiles(robloxFile, manyFileDirectory);
+                    RobloxStudioFileUnzipper.UnzipFiles(robloxFile, manyFileDirectory);
                     break;
                 case Direction.MANY_FILES_TO_ROBLOX_STUDIO:
-                    throw new NotImplementedException(direction.ToString());
+                    RobloxStudioFileUpdator.UpdateAllFile(robloxFile, manyFileDirectory);
+                    break;
             }            
         }
     }
