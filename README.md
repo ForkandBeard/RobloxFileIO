@@ -12,8 +12,7 @@ This app will then parse the .rbxlx file (must be saved in Roblox Studio as XML)
 # Why?
 This allows a user to upload the individual .lua files to Git or the source control of their choice and have version control history/backups at script level.
 
-# How do you update the Roblox Studio file with any changes?
-
+# Can I update the Roblox Studio file with any changes?
 To update the Roblox Studio file with any changes made in those many Lua scripts use:
 ```
 RobloxFileIO.exe @ROBLOX_STUDIO_FILE "C:\..\YourGame.rbxlx" @MANY_FILES_DIRECTORY "C:\..\Target" @DIRECTION MANY_FILES_TO_ROBLOX_STUDIO
