@@ -125,11 +125,7 @@ namespace RobloxFileIO
                                 && (parent != null)
                                 )
                         {
-                            if (
-                                (parent.Attributes != null)
-                                && (parent.Attributes["class"] != null)
-                                && (parent.Attributes["class"].Value == "Folder")
-                               )
+                            if (MakeNodeAFolder(parent))
                             {
                                 if (subFolderPath == null)
                                 {
@@ -176,6 +172,19 @@ namespace RobloxFileIO
                     }
                 }
             }
+        }
+
+        private static bool MakeNodeAFolder(XmlNode node)
+        {
+            return (node.Attributes != null)
+                && (node.Attributes["class"] != null)
+                && (
+                    (node.Attributes["class"].Value == "Folder")
+                    || (node.Attributes["class"].Value == "ScreenGui")
+                    || (node.Attributes["class"].Value == "Frame")
+                    || (node.Attributes["class"].Value == "Part")
+                    || (node.Attributes["class"].Value == "Model")
+                    );
         }
 
         private static string GetFileExtenstionCodeFromClassValue(string classValue)
